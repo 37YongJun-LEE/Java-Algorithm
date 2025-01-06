@@ -1,69 +1,57 @@
-import java.awt.print.PrinterGraphics;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.*;
 
 public class Main {
 
+    static int N, M,
+            K; // M 번 만 출금. >> M번을 맞추기 위한 K 원 출금 금액을 찾을것.
+    static int[] Charge;
 
-    static int arr[];
+    public static void main(String[] args) throws Exception {
 
-    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        String[] str = br.readLine().split(" ");
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        Charge = new int[N];
 
-        int N = Integer.parseInt(str[0]);
-        int M = Integer.parseInt(str[1]);
-
-        arr =  new int[N];
-
-
-        int end = 0;
-        int start = 0;
-        int max = 0;
-        int result = 0;
+        int low = 0;
+        int high = 0;
         for (int i = 0; i < N; i++) {
-            arr[i] = Integer.parseInt(br.readLine());
-            end += arr[i];
-            max = Math.max(max,arr[i]);
-
+            Charge[i] = Integer.parseInt(br.readLine());
+            low = Math.max(low, Charge[i]);
+            high += Charge[i];
         }
-        //돈을 가장 많이 쓰는 날 이상의 금액을 인출해야 한다.
-        // 그렇지 않으면ㄴ 인출을 하더라도 금액이 부족하기 때문에 계속 인출을 반복한다.
 
-        start = max;
+        while (low <= high) {
 
-        while (start <= end){
-                int mid = (start + end)/2;
-                // 지정한 횟수 이하의 횟수만큼 인출해야 할 경우,
-                // 인출 금액이 더 적은 경우에 해답이 있는지 탐색해 봐야 한다.
-                if(M >= getMid(mid)){
-                    result = mid;
-                    end = mid - 1;
-                    //지정한 횟수보다 더 많이 인출해야 할 경우
-                    //이눛ㄹ 금액이 더 커야한다.
-                }else{
-                    start = mid+1;
+            int mid = (low + high) / 2;
+            int cnt = 1; // cnt는 필요한 순간에 돈을 뽑는 경우이다.
+            int nowCash = mid;
+
+            for (int i = 0; i < N; i++) {
+                nowCash -= Charge[i];
+                if (nowCash < 0) {
+                    cnt++;
+                    nowCash = mid - Charge[i];
                 }
-        }
 
-        System.out.println(result);
-    }
+            }
+//            System.out.println("현재 cnt : " + cnt);
+//            System.out.println("현재 mid : " + mid);
 
-    static int getMid(int tempMoney){
-        int count = 1;
-        int money = tempMoney;
+            if (cnt <= M) {
+//                System.out.println("mid 크다 줄여");
+                high = mid - 1;
+            } else {
+//                System.out.println("mid 작다 키워");
+                low = mid + 1;
 
-        for(int num : arr){
-            money -= num;// 여기서 money는 하루 쓸 돈인데 0이상이면 인출한 돈이 모자라므로 한번 더 인출
-
-            if(money < 0){
-                count++;
-                money = tempMoney - num;
             }
 
         }
-        return count;
+        System.out.println(low);
+
     }
 }
