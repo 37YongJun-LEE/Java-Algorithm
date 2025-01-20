@@ -44,7 +44,7 @@ public class Main {
                 }
 
                 // 정렬에서 음수일때는 순서가 뒤바뀔수 있으므로 정렬 통일성 유지를 위해서 ABS 먹인다.
-                if (min != Integer.MAX_VALUE || max != Integer.MIN_VALUE) {
+                if (min != Integer.MAX_VALUE) {
                     if (now == min) { // 오름차순 정렬
                         CafeListAdj[i].sort((a, b) -> {
                             return a - b;
@@ -76,9 +76,9 @@ public class Main {
                 int idx = Integer.parseInt(st.nextToken()) - 1;
                 System.out.println(AnswerList.get(idx)[0] + " " + AnswerList.get(idx)[1]);
             }
+//            System.out.println("-----------------------------------------------");
 
         }
-
 
 
     }
