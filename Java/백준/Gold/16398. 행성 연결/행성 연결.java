@@ -24,6 +24,7 @@ public class Main {
         }
 
         Collections.sort(FlowList, (a, b) -> a[2] - b[2]);
+
         // 최소 신장 트리 구하기.
         long sum = 0;
         for (int[] flow : FlowList) {
@@ -40,7 +41,7 @@ public class Main {
 
     private static int find(int a) {
         if (Parent[a] == a) return a;
-        return find(Parent[a]);
+        return Parent[a] = find(Parent[a]);
     }
 
     private static void union(int a, int b) {
@@ -51,5 +52,4 @@ public class Main {
         if (a < b) Parent[b] = a;
         else Parent[a] = b;
     }
-
 }
