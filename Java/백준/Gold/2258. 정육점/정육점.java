@@ -42,14 +42,12 @@ public class Main {
         int minAnswer = Integer.MAX_VALUE;
         int weightSum = 0;
         int priceNow = 0;
-        int beforePrice = 0;
-
 
         for (int i = 1; i <= MeetList.size(); i++) {
             weightSum += weight[i];
-            
-            if (beforePrice != price[i]) {
-                priceNow = beforePrice = price[i];
+
+            if (price[i-1] != price[i]) {
+                priceNow = price[i];
             } else {
                 priceNow += price[i];
             }
