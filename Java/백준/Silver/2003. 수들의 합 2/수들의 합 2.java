@@ -1,41 +1,42 @@
 import java.io.*;
-import java.util.StringTokenizer;
+import java.util.*;
 
-//BOJ_2003 수들의 합 2
 public class Main {
-    static int N, M;
+    static int N, K;
+    static int[] Num;
+
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());   //수열의 개수
-        M = Integer.parseInt(st.nextToken());   //타겟 넘버
+        N = Integer.parseInt(st.nextToken());
+        K = Integer.parseInt(st.nextToken());
 
-        int[] arr = new int[N];
+        Num = new int[N];
         st = new StringTokenizer(br.readLine());
-        for(int i=0; i<N; i++) {
-            arr[i] = Integer.parseInt(st.nextToken());
-        }
-        int res = 0;
+        for (int i = 0 ; i < N; i++) Num[i] = Integer.parseInt(st.nextToken());
 
-        int l,r,sum;
-        l = r = sum = 0;
+        int answer = 0;
 
-        //같은 위치에서 시작
+        int left = 0;
+        int right = 0;
+        int sum = 0;
 
-        while(true) {
-            if(sum >= M) {
-                sum -= arr[l++];
+        while (true) {
+            if (sum >= K) {
+                sum -= Num[left];
+                left++;
+            } else if (right == N) {
+                break;
+            } else {
+                sum += Num[right];
+                right++;
             }
-            else if(r==N) break;
-            else {  //sum < M
-                sum += arr[r++];
-            }
 
-            if(sum == M) {
-                res++;
-            }
+            if (sum == K) answer++;
         }
 
-        System.out.println(res);
+        System.out.println(answer);
+
+
     }
 }
