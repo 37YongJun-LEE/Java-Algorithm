@@ -1,35 +1,45 @@
+import java.io.*;
 import java.util.*;
 
 class Solution {
     public int solution(int[][] jobs) {
-        // 요청 시간 기준으로 정렬
-        Arrays.sort(jobs, (a, b) -> a[0] - b[0]);
-
-        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[1] - b[1]); // 소요시간 기준 정렬
-
+        int answer = 0;
+        double sum = 0;
+        
+        Arrays.sort(jobs, (a, b) -> a[0] - b[0]); // 요청 시각 기준 작업 정렬.
+        
+        // 여기서부터 작업을 기준으로 순차적으로 진행하돼 우선순위에따라서 작업처리가 진행되어야함.
+        PriorityQueue<int[]> pq = new PriorityQueue<>( (a,b) -> {
+            if (a[1] == b[1]) return a[0] - b[0];
+            return a[1] - b[1];
+        });
+        
         int time = 0;
-        int jobIndex = 0;
-        int totalTime = 0;
+        int idx = 0;
         int count = 0;
-
-        while (count < jobs.length) {
-            // 현재 시간까지 들어온 작업 pq에 넣기
-            while (jobIndex < jobs.length && jobs[jobIndex][0] <= time) {
-                pq.offer(new int[]{jobs[jobIndex][0], jobs[jobIndex][1]});
-                jobIndex++;
+        
+        while (count < jobs.length) { // 딱 작업 개수만큼 프로그램 처리할 것.
+            
+            // pq에 넣는 부분 : 동시간대 처리가 필요.
+            while ( idx < jobs.length && jobs[idx][0] <= time ) { // 현재시각보다 요청시각이 같거나 작으면 넣기 + null 접근 방지.
+                // System.out.println(Arrays.toString(jobs[idx]));
+                pq.offer(new int[] {jobs[idx][0], jobs[idx][1]});
+                idx++;
             }
-
+            
+            // 작업을 처리하는 부분
             if (!pq.isEmpty()) {
-                int[] job = pq.poll();
-                time += job[1]; // 소요시간만큼 진행
-                totalTime += time - job[0]; // 대기 시간 + 실행 시간
+                int[] nowJob = pq.poll(); //[요청시각, 소요시간.]
+                time += nowJob[1];
+                sum += time - nowJob[0];
                 count++;
             } else {
-                // 대기 중인 작업이 없으면 시간 이동
-                time = jobs[jobIndex][0];
+                time = jobs[idx][0];
             }
+            
         }
-
-        return totalTime / jobs.length;
+        answer = (int)(sum / jobs.length);
+            
+        return answer;
     }
 }
