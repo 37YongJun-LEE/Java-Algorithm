@@ -12,8 +12,6 @@ class Solution {
         Order = new int[dungeons.length];
         Visited = new boolean[dungeons.length];
         dfs(k, dungeons, 0, dungeons.length); 
-        
-        
         return answer;
     }
     
@@ -30,10 +28,7 @@ class Solution {
                     cnt++;
                 }
             }
-            
             answer = Math.max(answer, cnt);
-            
-            
             return;
         }
         
@@ -43,7 +38,6 @@ class Solution {
             Order[idx] = i;
             dfs(k, dungeons, idx + 1, depth);
             Visited[i] = false;
-            
         }
         
     }
