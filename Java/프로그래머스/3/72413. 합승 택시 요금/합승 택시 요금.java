@@ -3,7 +3,6 @@ import java.util.*;
 class Solution {
     
     static ArrayList<int[]>[] AdjList;
-    
     public int solution(int n, int s, int a, int b, int[][] fares) {
         int answer = 0;
 
@@ -16,14 +15,6 @@ class Solution {
             AdjList[v1].add(new int[] {v2, cost});
             AdjList[v2].add(new int[] {v1, cost});
         }
-        
-        // for (int i = 0 ; i <= n; i++) {
-        //     System.out.print(i + ": " );
-        //     for (int[] arr : AdjList[i]) {
-        //         System.out.print(Arrays.toString(arr));
-        //     }
-        //     System.out.println();
-        // }
 
         int[] SM = new int[n+1];
         int[] AM = new int[n+1];
