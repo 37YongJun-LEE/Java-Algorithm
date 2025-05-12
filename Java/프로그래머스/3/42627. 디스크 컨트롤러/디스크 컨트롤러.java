@@ -1,64 +1,50 @@
 import java.util.*;
 
-
 class Solution {
     public int solution(int[][] jobs) {
         int answer = 0;
-        
+
         Arrays.sort(jobs, (a, b) -> {
             return a[0] - b[0];
         });
-        
-        // for (int[] job : jobs) {
-        //     System.out.println(Arrays.toString(job));
-        // }
-        
+        // for (int[] job : jobs) System.out.println(Arrays.toString(job));
+        // int[] {요청시간, 소요시간};
         PriorityQueue<int[]> pq = new PriorityQueue<>((a,b) -> {
             if (a[1] == b[1]) return a[0] - b[0];
             return a[1] - b[1];
-        });
+        });        
         
+        int n = jobs.length;
         int time = 0;
-        int idx = 0;            
-        int N = jobs.length;
+        int idx = 0;
         
-        while (idx < N) {
-            while (idx < N && jobs[idx][0] <= time) {
-                pq.offer(new int[] {jobs[idx][0], jobs[idx][1]});
+        while ( idx < n ) {
+            
+            while (idx < n && jobs[idx][0] <= time) {
+                pq.offer(jobs[idx]);
+                // System.out.println(idx);
+                // System.out.println(Arrays.toString(jobs[idx]));
                 idx++;
             }
-            
-            // for (int[] arr : pq) {
-            //     System.out.print(Arrays.toString(arr));
-            // }
-            // System.out.println();
-            
+
             if (!pq.isEmpty()) {
                 int[] v = pq.poll();
                 time += v[1];
                 answer += time - v[0];
-                
-                // System.out.println(time + "-" + v[0] + "=" + (time-v[0]));
-                // System.out.println(answer);
             } else {
-                if (idx < N) {
-                    time = jobs[idx][0];
-                    //idx++;                    
-                }
+                time = jobs[idx][0];
             }
+            
+            
         }
         
         while (!pq.isEmpty()) {
             int[] v = pq.poll();
             time += v[1];
             answer += time - v[0];
-
-            // System.out.println(time + "-" + v[0] + "=" + (time-v[0]));
-            // System.out.println(answer);
         }
-            
-        
-           
-        return answer / jobs.length;
+                
+        return answer / n;
     }
+    
 }
