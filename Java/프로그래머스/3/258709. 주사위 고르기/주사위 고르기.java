@@ -1,83 +1,94 @@
 import java.util.*;
 
 class Solution {
-    // A, B n개의 주사위
-    // 6개 면에 1~n
-    int N, win, aWin;
-    int[] sol, battleDice, aDice, bDice;
-    List<Integer> aSumCombi, bSumCombi;
-    boolean[] visit = new boolean[15];
+    static boolean[] DiceTF;
+    static int MaxA;
+    static int[] answer;
     
-    public int lowerBound(List<Integer> arr, int t){
-        int s = 0;
-        int e = arr.size();
-        while(s < e){
-            Integer mid = (s+e) / 2;
-            if(arr.get(mid) < t) s = mid + 1;
-            else e = mid;
-        }
-        return e;
+    static ArrayList<Integer> aList, bList, aScoreList, bScoreList;
+    
+    public int[] solution(int[][] dice) {
+        answer = new int[dice.length];
+        
+        DiceTF = new boolean[dice.length];
+        
+        dfsDiceTF( dice, 0);
+        
+        return answer;
     }
     
-    public void game(List<Integer> aSumCombi, List<Integer> bSumCombi){
-        Collections.sort(bSumCombi);
-        for(Integer i : aSumCombi){
-            aWin = aWin + lowerBound(bSumCombi, i);
-        }
-    }
     
-    public void rollDice(int n, int sum, int[] nowDice, int[][] dice, List<Integer> sumCombi){
-        if(n == N/2){
-            sumCombi.add(sum);
-            return;
-        }
-        for(int i = 0; i < 6; i++){
-            rollDice(n+1, sum + dice[nowDice[n]][i], nowDice, dice, sumCombi);
-        }
-    }
     
-    public void expectGame(int[][] dice){
-        aDice = new int[N/2];
-        bDice = new int[N/2];
-        int aSize = 0, bSize = 0;
-        
-        for(int i = 0; i < N; i++){
-            if(visit[i]) aDice[aSize++] = i;
-            else bDice[bSize++] = i;
-        }
-
-        aSumCombi = new ArrayList<>(10000);
-        bSumCombi = new ArrayList<>(10000);
-        
-        rollDice(0, 0, aDice, dice, aSumCombi);
-        rollDice(0, 0, bDice, dice, bSumCombi);
-        
-        game(aSumCombi, bSumCombi);
-        
-        return;
-    }
-    
-    public void combination(int n, int k, int[][] dice){
-        if(n == N/2){
-            aWin = 0;
-            expectGame(dice);
-            if(aWin > win){
-                for(int i = 0; i < N/2; i++) sol[i] = aDice[i] + 1;
-                win = aWin;
+    public static void dfsDiceTF(int[][] dice , int idx) {
+        if (idx == dice.length) {
+            aList = new ArrayList<>();
+            bList = new ArrayList<>();
+            for (int i = 0 ; i < DiceTF.length; i++) {
+                if (DiceTF[i]) aList.add(i); // aCnt++;
+                else bList.add(i);// bCnt++;
+            }
+            
+            if (aList.size() == bList.size()) {
+                // System.out.println(aList);
+                aScoreList = getScore(dice, aList);
+                bScoreList = getScore(dice, bList);
+                Collections.sort(bScoreList);
+                int aWinCnt = 0;
+                for (int score : aScoreList) {
+                    aWinCnt += lowerBound(score);
+                }
+                if (MaxA < aWinCnt) {
+                    MaxA = aWinCnt;
+                    // System.out.println(aWinCnt);
+                    answer = new int[aList.size()];
+                    int cnt = 0;
+                    for (int num : aList) {
+                        answer[cnt] = num+1;
+                        cnt++;
+                    }
+                }
+                
+                
             }
             return;
         }
-        for(int i = k; i < N; i++){
-            visit[i] = true;
-            combination(n+1, i+1, dice);
-            visit[i] = false;
+        DiceTF[idx] = true;
+        dfsDiceTF( dice, idx + 1);
+        DiceTF[idx] = false;
+        dfsDiceTF( dice, idx + 1);
+    }
+    
+    public static int lowerBound(int aScore) {
+        int low = 0;
+        int high = bScoreList.size();
+        
+        while (low < high) {
+            int mid = (low + high) / 2;
+            if (bScoreList.get(mid) < aScore) {
+                low = mid+1;
+            } else {
+                high = mid;
+            }
         }
+    
+        return low;
     }
-    public int[] solution(int[][] dice) {
-        N = dice.length;
-        battleDice = new int[N];
-        sol = new int[N/2];
-        combination(0, 0, dice);
-        return sol;
+    
+    
+    public static ArrayList<Integer> getScore(int[][] dice, ArrayList<Integer> nowList) {
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(0);
+        for (int idx : nowList) {
+            ArrayList<Integer> tempList = new ArrayList<>();
+            for (int listNum : list) {
+                for (int num : dice[idx] ) {
+                    tempList.add(listNum + num);
+                }    
+            }
+            list = tempList;
+        }
+        
+        return list;
     }
+    
 }
